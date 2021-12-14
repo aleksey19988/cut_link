@@ -22,6 +22,18 @@ if (!empty($_GET['inputLink'])) {
     if (!$writeToDb) {
         echo "<script type='text/javascript'>alert('Ошибка!');</script>";
     }
+} else {
+    $URI = $_SERVER['REQUEST_URI'];
+    $token = substr($URI, 10);
+
+    //Проверяем, есть ли такой токен в БД
+    $sel = $connect->query("SELECT * FROM links WHERE token = '$token'")->fetch_assoc();
+
+    if (empty($sel)) {
+        echo "<script type='text/javascript'>alert('Ссылка не найдена в базе данных. Попробуйте ещё раз');</script>";
+    } else {
+        header("Location: " . $sel['link']);
+    }
 }
 
 $links = $connect->query("SELECT * FROM links")->fetch_all();
