@@ -1,3 +1,7 @@
+<?php
+    include 'request.php';
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,10 +17,10 @@
         <div class="text-center">
             <h1 class="mt-5">Cut your link</h1>
         </div>
-        <form method="get">
+        <form method="get" action="">
             <div class="mb-3">
                 <label for="inputLink" class="form-label">Link</label>
-                <input type="text" class="form-control" id="inputLink" placeholder="Input your link">
+                <input type="text" class="form-control" id="inputLink" name="inputLink" placeholder="Input your link">
             </div>
             <button type="submit" class="btn btn-primary">Cut link</button>
         </form>
@@ -27,15 +31,20 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">New link</th>
                 <th scope="col">Old link</th>
+                <th scope="col">New link</th>
                 <th scope="col">Generating date</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-
-            </tr>
+            <?php foreach ($links as $link): ?>
+                <tr>
+                    <td><?= $link[0]?></td>
+                    <td><?= $link[1]?></td>
+                    <td><?= $link[2]?></td>
+                    <td><?= $link[3]?></td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
     </div>
