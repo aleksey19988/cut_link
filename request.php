@@ -12,12 +12,19 @@ if ($connect->connect_error !== null) {
     die("Подключение завершилось с ошибкой!:" . mysqli_connect_error());
 }
 
-//Если запрос не пустой
+//Шаблон для использования при переадресации
+$pattern = "localhost/cut-link/";
+
+//Если запрос не пустой:
 if (!empty($_GET['inputLink'])) {
-    $requestLink = $_GET['inputLink'];//Ссылка из input-a
+
+    $input = trim($_GET['inputLink']);
+    $clearInput = mysqli_real_escape_string($connect, $input);
+
     $token = tokenGenerator();//Генерирую токен
     $datetime = date("F j, Y, g:i a");//Формирую дату и время создания короткой ссылки
-    $writeToDb = $connect->query("INSERT INTO `links` (link, token, datetime) VALUES ('$requestLink', '$token', '$datetime')");//Записываю данные в БД
+    $newLink = $pattern . $token;
+    $writeToDb = $connect->query("INSERT INTO `links` (link, token, datetime) VALUES ('$clearInput', '$newLink', '$datetime')");//Записываю данные в БД
     //Если при записи в БД что-то пошло не так
     if (!$writeToDb) {
         echo "<script type='text/javascript'>alert('Ошибка!');</script>";
@@ -25,14 +32,16 @@ if (!empty($_GET['inputLink'])) {
 } else {
     $URI = $_SERVER['REQUEST_URI'];
     $token = substr($URI, 10);
+    if (!empty($token)) {
+        $link = $pattern . $token;
+        //Проверяем, есть ли такой токен в БД
+        $sel = $connect->query("SELECT * FROM links WHERE token = '$link'")->fetch_assoc();
 
-    //Проверяем, есть ли такой токен в БД
-    $sel = $connect->query("SELECT * FROM links WHERE token = '$token'")->fetch_assoc();
-
-    if (empty($sel)) {
-        echo "<script type='text/javascript'>alert('Ссылка не найдена в базе данных. Попробуйте ещё раз');</script>";
-    } else {
-        header("Location: " . $sel['link']);
+        if (empty($sel)) {
+            echo "<script type='text/javascript'>alert('Ссылка не найдена в базе данных. Попробуйте ещё раз');</script>";
+        } else {
+            header("Location: " . $sel['link']);
+        }
     }
 }
 
