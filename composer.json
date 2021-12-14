@@ -1,0 +1,15 @@
+{
+    "name": "aleksey/cut-link",
+    "autoload": {
+        "psr-4": {
+            "Aleksey\\CutLink\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Aleksey Kononenko",
+            "email": "aleksey19988@gmail.com"
+        }
+    ],
+    "require": {}
+}
